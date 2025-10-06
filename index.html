@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XKulverse - SMAN 1 Dramaga</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+        .btn-primary {
+            background-color: #e94560;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #f0627a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+        }
+        .input-field {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #e94560;
+            box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.5);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e94560;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f0627a;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div id="app" class="container mx-auto p-4 min-h-screen flex flex-col items-center justify-center">
+
+        <!-- Page 1: Login -->
+        <div id="loginPage" class="w-full max-w-md text-center">
+            <div class="glassmorphism p-8 shadow-lg">
+                <h1 class="text-4xl font-bold mb-2 text-white">XKulverse 🚀</h1>
+                <p class="text-gray-400 -mt-2 mb-6">Eskul SMAN 1 Dramaga</p>
+                <p class="text-gray-300 mb-8">Daftar & kelola kegiatan ekstrakurikuler kamu.</p>
+                <div class="space-y-6">
+                    <input id="studentName" type="text" placeholder="Ketik nama lengkap kamu..." class="w-full p-4 rounded-lg input-field text-white placeholder-gray-400">
+                    <button id="loginBtn" class="w-full p-4 rounded-lg btn-primary font-bold text-white text-lg">Masuk ✨</button>
+                </div>
+                 <p id="loginError" class="text-red-400 mt-4 text-sm hidden">Nama tidak boleh kosong!</p>
+            </div>
+        </div>
+
+        <!-- Main Content (Hidden by default) -->
+        <div id="mainContent" class="hidden w-full h-full">
+            <!-- Header -->
+            <header class="glassmorphism p-4 mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">XKulverse ✨</h1>
+                    <p class="text-xs text-gray-400">SMAN 1 Dramaga</p>
+                    <p class="text-gray-300 text-sm mt-2">👋 Selamat datang, <span id="welcomeName" class="font-semibold"></span>!</p>
+                </div>
+                <button id="logoutBtn" class="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    Keluar
+                </button>
+            </header>
+
+            <!-- Navigation -->
+            <nav class="glassmorphism p-2 mb-6 flex justify-around rounded-full">
+                <button data-page="homePage" class="nav-btn active p-3 rounded-full transition-all duration-300">
+                    <i data-lucide="home" class="w-6 h-6"></i>
+                </button>
+                <button data-page="portfolioPage" class="nav-btn p-3 rounded-full transition-all duration-300">
+                    <i data-lucide="award" class="w-6 h-6"></i>
+                </button>
+                <button data-page="forumPage" class="nav-btn p-3 rounded-full transition-all duration-300">
+                    <i data-lucide="messages-square" class="w-6 h-6"></i>
+                </button>
+            </nav>
+            
+            <main>
+                <!-- Page 2: Home (Ekskul List, Jadwal, Pengumuman) -->
+                <div id="homePage" class="page-content">
+                    
+                    <!-- My Registered Ekskul & Attendance Section -->
+                    <div id="myEkskulSection" class="mb-8">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="user-check" class="w-5 h-5"></i>Ekskul Terdaftar & Absensi Saya 📝</h2>
+                        <div id="myEkskulList" class="space-y-4">
+                           <!-- My Registered Ekskul cards will be injected by JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Pengumuman -->
+                    <div class="mb-6">
+                        <h2 class="text-xl font-bold mb-3 flex items-center gap-2"><i data-lucide="megaphone" class="w-5 h-5"></i>Pengumuman & Informasi 📢</h2>
+                        <div id="announcement" class="glassmorphism p-4 text-sm">
+                            <!-- Announcement content will be injected by JS -->
+                        </div>
+                    </div>
+                    
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="layout-grid" class="w-5 h-5"></i>Pilihan Ekstrakurikuler ✨</h2>
+                    <div id="ekskulList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- Ekskul cards will be injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Page 3: Prestasi & Portofolio -->
+                <div id="portfolioPage" class="page-content hidden">
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="award" class="w-5 h-5"></i>Prestasi & Portofolio 🏆</h2>
+                    <div class="mb-4">
+                        <select id="portfolioFilter" class="w-full p-3 rounded-lg input-field text-white">
+                            <!-- Options will be injected by JS -->
+                        </select>
+                    </div>
+                    <div id="portfolioContent" class="glassmorphism p-4 min-h-[300px]">
+                        <!-- Portfolio content will be injected by JS -->
+                    </div>
+                     <div class="mt-6">
+                        <h3 class="text-lg font-semibold mb-3">Upload Laporan & Dokumentasi 📎</h3>
+                        <div class="glassmorphism p-4 flex flex-col gap-4">
+                            <input type="file" id="fileUpload" class="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-100 file:text-pink-700 hover:file:bg-pink-200">
+                            <textarea id="fileDescription" rows="3" placeholder="Deskripsi singkat..." class="w-full p-3 rounded-lg input-field text-white placeholder-gray-400"></textarea>
+                            <button id="uploadBtn" class="self-start px-6 py-2 rounded-lg btn-primary font-bold text-white text-sm">Upload 📤</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 4: Forum Diskusi -->
+                <div id="forumPage" class="page-content hidden">
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="messages-square" class="w-5 h-5"></i>Forum Diskusi 💬</h2>
+                    <div class="glassmorphism flex flex-col h-[60vh]">
+                        <div id="chatBox" class="flex-1 p-4 overflow-y-auto space-y-4">
+                            <!-- Chat messages will be injected by JS -->
+                        </div>
+                        <div class="p-4 border-t border-gray-700 flex gap-3">
+                            <input id="chatInput" type="text" placeholder="Ketik pesan..." class="flex-1 p-3 rounded-full input-field text-white placeholder-gray-400">
+                            <button id="sendChatBtn" class="w-12 h-12 flex items-center justify-center rounded-full btn-primary">
+                                <i data-lucide="send" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Modal for Ekskul Details -->
+        <div id="ekskulModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 hidden">
+            <div id="modalContent" class="glassmorphism w-full max-w-lg p-6 relative transform transition-all scale-95 opacity-0">
+                <!-- Modal content will be injected by JS -->
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-5 right-5 bg-green-500 text-white py-2 px-5 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300">
+            <!-- Message -->
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- UI ELEMENTS ---
+            const loginPage = document.getElementById('loginPage');
+            const mainContent = document.getElementById('mainContent');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const studentNameInput = document.getElementById('studentName');
+            const loginError = document.getElementById('loginError');
+            
+            const myEkskulList = document.getElementById('myEkskulList');
+            const ekskulList = document.getElementById('ekskulList');
+            const announcementEl = document.getElementById('announcement');
+            
+            const pages = document.querySelectorAll('.page-content');
+            const navBtns = document.querySelectorAll('.nav-btn');
+
+            const ekskulModal = document.getElementById('ekskulModal');
+            const modalContent = document.getElementById('modalContent');
+
+            const portfolioFilter = document.getElementById('portfolioFilter');
+            const portfolioContent = document.getElementById('portfolioContent');
+            const uploadBtn = document.getElementById('uploadBtn');
+
+            const chatBox = document.getElementById('chatBox');
+            const chatInput = document.getElementById('chatInput');
+            const sendChatBtn = document.getElementById('sendChatBtn');
+
+            const toast = document.getElementById('toast');
+            
+            // --- GLOBAL STATE ---
+            let currentUser = null;
+            let appData = {}; // Holds user-specific data like registrations and attendance
+            let ekskuls = []; // Holds general ekskul info
+            let portfolios = {}; // Holds global portfolio data
+            let chats = []; // Holds global chat data
+
+            // --- DATA INITIALIZATION & PERSISTENCE (localStorage) ---
+            const defaultData = {
+                ekskuls: [
+                    { id: 1, name: "Basket", icon: "basketball", schedule: "Selasa & Jumat, 15:30", members: 18 },
+                    { id: 2, name: "Futsal", icon: "soccer-ball", schedule: "Rabu & Sabtu, 15:30", members: 22 },
+                    { id: 3, name: "Paskibra", icon: "flag", schedule: "Senin & Kamis, 15:00", members: 30 },
+                    { id: 4, name: "PMR", icon: "heart-pulse", schedule: "Rabu, 15:00", members: 25 },
+                    { id: 5, name: "Pramuka", icon: "compass", schedule: "Sabtu, 14:00", members: 40 },
+                    { id: 6, name: "Teater", icon: "drama", schedule: "Kamis, 16:00", members: 15 },
+                    { id: 7, name: "Musik", icon: "music", schedule: "Jumat, 16:00", members: 20 },
+                    { id: 8, name: "Fotografi", icon: "camera", schedule: "Selasa, 16:00", members: 17 },
+                    { id: 9, name: "KIR", icon: "flask-conical", schedule: "Rabu, 15:30", members: 12 },
+                    { id: 10, name: "E-Sport", icon: "gamepad-2", schedule: "Sabtu, 16:00", members: 35 },
+                    { id: 11, name: "Jurnalistik", icon: "newspaper", schedule: "Senin, 15:30", members: 14 },
+                    { id: 12, name: "Tari", icon: "person-standing", schedule: "Kamis, 15:30", members: 19 },
+                    { id: 13, name: "Band", icon: "guitar", schedule: "Jumat, 16:30", members: 16 },
+                ],
+                portfolios: {
+                    1: [{ student: "Budi", achievement: "Juara 1 Lomba Basket 3x3 Tingkat Kota", file: "laporan-basket.pdf", desc: "Tim kami berhasil memenangkan turnamen..." }],
+                    2: [{ student: "Tim Futsal", achievement: "Juara 2 Turnamen Futsal Kabupaten", file: "dokumentasi-futsal.jpg", desc: "Foto bersama setelah pertandingan final." }],
+                    10: [{ student: "Rina", achievement: "MVP Turnamen E-Sport Nasional", file: "sertifikat-rina.pdf", desc: "Sertifikat kemenangan Rina." }],
+                },
+                chats: [
+                    { user: "Andi (Basket)", message: "Guys, jangan lupa latihan besok ya!", time: "08:10" },
+                    { user: "Sari (PMR)", message: "Untuk anggota baru PMR, kumpul di UKS jam 3 sore.", time: "08:12" },
+                    { user: "Admin", message: "Selamat pagi semua! Semangat beraktivitas!", time: "08:15" },
+                ]
+            };
+            
+            function saveData() {
+                localStorage.setItem(`xkulverse_data_${currentUser}`, JSON.stringify(appData));
+                localStorage.setItem('xkulverse_portfolios', JSON.stringify(portfolios));
+                localStorage.setItem('xkulverse_chats', JSON.stringify(chats));
+            }
+
+            function loadData() {
+                // Load user-specific data
+                const savedUserData = localStorage.getItem(`xkulverse_data_${currentUser}`);
+                if (savedUserData) {
+                    const userData = JSON.parse(savedUserData);
+                    appData.registrations = userData.registrations || [];
+                    appData.attendance = userData.attendance || {};
+                } else {
+                    appData = { registrations: [], attendance: {} };
+                }
+
+                // Load global data (portfolios, chat, ekskul list)
+                const savedPortfolios = localStorage.getItem('xkulverse_portfolios');
+                portfolios = savedPortfolios ? JSON.parse(savedPortfolios) : defaultData.portfolios;
+
+                const savedChats = localStorage.getItem('xkulverse_chats');
+                chats = savedChats ? JSON.parse(savedChats) : defaultData.chats;
+
+                ekskuls = defaultData.ekskuls; // Ekskul list is static
+            }
+
+            // --- FUNCTIONS ---
+            
+            const showToast = (message, type = 'success') => {
+                toast.textContent = message;
+                toast.className = `fixed bottom-5 right-5 text-white py-2 px-5 rounded-lg shadow-lg transform transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} translate-y-0 opacity-100`;
+                setTimeout(() => {
+                    toast.className = toast.className.replace('translate-y-0 opacity-100', 'translate-y-20 opacity-0');
+                }, 3000);
+            };
+
+            const renderEkskuls = () => {
+                ekskulList.innerHTML = '';
+                ekskuls.forEach(ekskul => {
+                    const isRegistered = appData.registrations?.some(reg => reg.id === ekskul.id);
+                    const card = document.createElement('div');
+                    card.className = `glassmorphism p-4 text-center cursor-pointer hover:bg-gray-700/50 transition-all duration-300 flex flex-col items-center justify-center aspect-square`;
+                    card.innerHTML = `
+                        <i data-lucide="${ekskul.icon}" class="w-10 h-10 mb-2 ${isRegistered ? 'text-pink-400' : 'text-white'}"></i>
+                        <h3 class="font-semibold text-md">${ekskul.name}</h3>
+                        <p class="text-xs text-gray-400">${ekskul.members} anggota</p>
+                        ${isRegistered ? '<span class="text-xs mt-2 bg-pink-500/30 text-pink-300 px-2 py-1 rounded-full">Terdaftar</span>' : ''}
+                    `;
+                    card.addEventListener('click', () => showEkskulDetails(ekskul.id));
+                    ekskulList.appendChild(card);
+                });
+                lucide.createIcons();
+            };
+            
+            const renderMyEkskuls = () => {
+                myEkskulList.innerHTML = '';
+                const myRegistrations = appData.registrations || [];
+
+                if(myRegistrations.length === 0) {
+                    myEkskulList.innerHTML = `<div class="glassmorphism p-4 text-center text-gray-400">Kamu belum mendaftar di ekskul manapun. Ayo jelajahi pilihan di bawah! 👇</div>`;
+                    return;
+                }
+
+                myRegistrations.forEach(reg => {
+                    const ekskul = ekskuls.find(e => e.id === reg.id);
+                    const card = document.createElement('div');
+                    card.className = 'glassmorphism p-4 rounded-lg flex flex-col md:flex-row items-center gap-4';
+
+                    const today = new Date().toISOString().split('T')[0];
+                    const attendanceRecord = appData.attendance?.[ekskul.id]?.find(att => att.date === today);
+
+                    let attendanceHTML = '';
+                    if (attendanceRecord) {
+                        let statusText = '';
+                        switch (attendanceRecord.status) {
+                            case 'hadir': statusText = 'Anda sudah absen: Hadir ✅'; break;
+                            case 'sakit': statusText = 'Anda sudah lapor: Sakit 🤒'; break;
+                            case 'izin': statusText = 'Anda sudah lapor: Izin 🙏'; break;
+                        }
+                        attendanceHTML = `<div class="w-full text-center py-2 px-3 bg-gray-700/50 rounded-md font-semibold">${statusText}</div>`;
+                    } else {
+                        attendanceHTML = `
+                            <div class="w-full grid grid-cols-3 gap-2">
+                                <button data-id="${ekskul.id}" data-status="hadir" class="attendance-btn-home w-full p-2 rounded-lg font-bold text-white text-sm bg-green-600 hover:bg-green-700">Hadir</button>
+                                <button data-id="${ekskul.id}" data-status="sakit" class="attendance-btn-home w-full p-2 rounded-lg font-bold text-white text-sm bg-orange-500 hover:bg-orange-600">Sakit</button>
+                                <button data-id="${ekskul.id}" data-status="izin" class="attendance-btn-home w-full p-2 rounded-lg font-bold text-white text-sm bg-blue-500 hover:bg-blue-600">Izin</button>
+                            </div>
+                        `;
+                    }
+
+                    card.innerHTML = `
+                        <div class="flex-shrink-0"><i data-lucide="${ekskul.icon}" class="w-10 h-10 text-pink-400"></i></div>
+                        <div class="flex-1 text-center md:text-left">
+                            <h3 class="font-bold text-lg">${ekskul.name}</h3>
+                            <p class="text-sm text-gray-400">Jadwal: ${ekskul.schedule}</p>
+                             <p class="text-sm">🔥 Streak: <span class="font-bold text-yellow-400">${reg.streak}</span></p>
+                        </div>
+                        <div class="w-full md:w-1/2">
+                            ${attendanceHTML}
+                        </div>
+                    `;
+                    myEkskulList.appendChild(card);
+                });
+                 lucide.createIcons();
+            };
+
+            const renderAnnouncements = () => {
+                const announcements = [
+                    { title: "Pendaftaran Ekskul Dibuka!", content: "Pendaftaran untuk semua ekstrakurikuler semester ini dibuka dari tanggal 5-10 Oktober. Segera daftar di ekskul favoritmu!", date: "5 Okt" },
+                    { title: "Lomba Futsal Antar Kelas", content: "Akan diadakan lomba futsal pada tanggal 20 Oktober. Setiap kelas wajib mengirimkan perwakilannya.", date: "4 Okt" },
+                ];
+                announcementEl.innerHTML = announcements.map(ann => `
+                    <div class="border-l-4 border-pink-500 pl-3 mb-3">
+                        <p class="font-bold text-white">${ann.title} <span class="text-xs text-gray-400 font-normal">- ${ann.date}</span></p>
+                        <p class="text-gray-300">${ann.content}</p>
+                    </div>
+                `).join('');
+            };
+
+            const showEkskulDetails = (id) => {
+                const ekskul = ekskuls.find(e => e.id === id);
+                const isRegistered = appData.registrations?.some(reg => reg.id === id);
+                
+                modalContent.innerHTML = `
+                    <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-400 hover:text-white">&times;</button>
+                    <div class="text-center">
+                        <i data-lucide="${ekskul.icon}" class="w-16 h-16 mx-auto mb-4 text-pink-400"></i>
+                        <h2 class="text-2xl font-bold">${ekskul.name}</h2>
+                        <p class="text-gray-400 mb-4">${ekskul.members} anggota terdaftar</p>
+                        <p class="mb-1"><span class="font-semibold">Jadwal:</span> ${ekskul.schedule}</p>
+                        <p class="text-sm text-gray-300 mb-6">Deskripsi singkat tentang kegiatan dan prestasi ekskul ${ekskul.name}.</p>
+                    </div>
+                    
+                    <div class="flex flex-col gap-3">
+                        ${isRegistered ? `
+                            <button id="unregisterBtn" data-id="${id}" class="w-full p-3 rounded-lg bg-red-600 hover:bg-red-700 font-bold text-white text-md">Batalkan Pendaftaran</button>
+                        ` : `
+                            <button id="registerBtn" data-id="${id}" class="w-full p-3 rounded-lg btn-primary font-bold text-white text-md">Daftar Ekskul Ini ✨</button>
+                        `}
+                    </div>
+                `;
+
+                ekskulModal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                }, 10);
+                lucide.createIcons();
+
+                document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+
+                const registerBtn = document.getElementById('registerBtn');
+                if (registerBtn) {
+                    registerBtn.addEventListener('click', (e) => {
+                        const ekskulId = parseInt(e.target.dataset.id);
+                        if (!appData.registrations) appData.registrations = [];
+                        appData.registrations.push({ id: ekskulId, streak: 0 });
+                        ekskuls.find(e => e.id === ekskulId).members++;
+                        showToast(`Berhasil mendaftar di ${ekskul.name}! 🎉`);
+                        saveData();
+                        renderEkskuls();
+                        renderMyEkskuls();
+                        closeModal();
+                    });
+                }
+                
+                const unregisterBtn = document.getElementById('unregisterBtn');
+                if (unregisterBtn) {
+                     unregisterBtn.addEventListener('click', (e) => {
+                        const ekskulId = parseInt(e.target.dataset.id);
+                        appData.registrations = appData.registrations.filter(reg => reg.id !== ekskulId);
+                        ekskuls.find(e => e.id === ekskulId).members--;
+                        showToast(`Pendaftaran ${ekskul.name} dibatalkan. 👍`);
+                        saveData();
+                        renderEkskuls();
+                        renderMyEkskuls();
+                        closeModal();
+                    });
+                }
+            };
+            
+            const handleAttendance = (ekskulId, status) => {
+                const today = new Date().toISOString().split('T')[0];
+                const ekskul = ekskuls.find(e => e.id === ekskulId);
+                
+                if (!appData.attendance) appData.attendance = {};
+                if (!appData.attendance[ekskulId]) appData.attendance[ekskulId] = [];
+
+                if (appData.attendance[ekskulId].some(att => att.date === today)) {
+                    showToast(`Anda sudah melakukan absensi untuk ${ekskul.name} hari ini.`, 'error');
+                    return;
+                }
+
+                appData.attendance[ekskulId].push({ date: today, status: status });
+
+                const registration = appData.registrations?.find(reg => reg.id === ekskulId);
+                if (registration) {
+                    if(status === 'hadir') {
+                        registration.streak++;
+                        showToast(`Absen Hadir untuk ${ekskul.name} berhasil! Streak +1! 🔥`);
+                    } else {
+                        registration.streak = 0; // Reset streak on absence
+                        showToast(`Laporan ${status} untuk ${ekskul.name} terkirim. Streak direset. 😔`);
+                    }
+                }
+                saveData();
+                renderMyEkskuls();
+            };
+            
+            const closeModal = () => {
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    ekskulModal.classList.add('hidden');
+                }, 300);
+            };
+
+            const renderPortfolio = () => {
+                const selectedId = parseInt(portfolioFilter.value);
+                const items = portfolios[selectedId] || [];
+
+                if (items.length > 0) {
+                    portfolioContent.innerHTML = items.map(item => `
+                        <div class="mb-4 pb-4 border-b border-gray-700 last:border-b-0">
+                            <p class="font-bold text-white">${item.achievement}</p>
+                            <p class="text-sm text-gray-300">Oleh: ${item.student}</p>
+                            <p class="text-sm text-gray-400 mt-1">"${item.desc}"</p>
+                            <a href="#" class="text-sm text-pink-400 hover:underline mt-2 inline-block"><i data-lucide="file-text" class="w-4 h-4 inline-block mr-1"></i>Lihat: ${item.file}</a>
+                        </div>
+                    `).join('');
+                } else {
+                    portfolioContent.innerHTML = `<p class="text-gray-400 text-center mt-8">Belum ada portofolio untuk ekstrakurikuler ini. 📂</p>`;
+                }
+                lucide.createIcons();
+            };
+
+            const populatePortfolioFilter = () => {
+                portfolioFilter.innerHTML = `<option value="0" disabled selected>-- Pilih Ekstrakurikuler --</option>`;
+                ekskuls.forEach(ekskul => {
+                    const option = document.createElement('option');
+                    option.value = ekskul.id;
+                    option.textContent = ekskul.name;
+                    portfolioFilter.appendChild(option);
+                });
+            };
+
+            const renderChats = () => {
+                chatBox.innerHTML = '';
+                chats.forEach(chat => {
+                    const isCurrentUser = chat.user.startsWith(currentUser);
+                    const chatBubble = document.createElement('div');
+                    chatBubble.className = `flex flex-col ${isCurrentUser ? 'items-end' : 'items-start'}`;
+                    chatBubble.innerHTML = `
+                        <div class="text-xs text-gray-400 mb-1 ${isCurrentUser ? 'mr-2' : 'ml-2'}">${chat.user} - ${chat.time}</div>
+                        <div class="max-w-xs md:max-w-md p-3 rounded-2xl ${isCurrentUser ? 'bg-pink-600 text-white rounded-br-none' : 'glassmorphism rounded-bl-none'}">
+                           ${chat.message}
+                        </div>
+                    `;
+                    chatBox.appendChild(chatBubble);
+                });
+                chatBox.scrollTop = chatBox.scrollHeight;
+            };
+
+            const switchPage = (pageId) => {
+                pages.forEach(page => page.classList.add('hidden'));
+                document.getElementById(pageId).classList.remove('hidden');
+
+                navBtns.forEach(btn => {
+                    if (btn.dataset.page === pageId) {
+                        btn.classList.add('active', 'bg-pink-500/30', 'text-pink-300');
+                    } else {
+                        btn.classList.remove('active', 'bg-pink-500/30', 'text-pink-300');
+                    }
+                });
+            };
+            
+            const handleLogin = () => {
+                const name = studentNameInput.value.trim();
+                if (name) {
+                    currentUser = name;
+                    localStorage.setItem('xkulverse_currentUser', currentUser);
+                    loginPage.classList.add('hidden');
+                    mainContent.classList.remove('hidden');
+                    document.getElementById('welcomeName').textContent = currentUser;
+                    initApp();
+                } else {
+                    loginError.classList.remove('hidden');
+                }
+            };
+            
+            const handleLogout = () => {
+                localStorage.removeItem('xkulverse_currentUser');
+                currentUser = null;
+                mainContent.classList.add('hidden');
+                loginPage.classList.remove('hidden');
+                studentNameInput.value = '';
+            };
+
+            // --- EVENT LISTENERS ---
+            loginBtn.addEventListener('click', handleLogin);
+            studentNameInput.addEventListener('keyup', (e) => {
+                loginError.classList.add('hidden');
+                if (e.key === 'Enter') handleLogin();
+            });
+
+            logoutBtn.addEventListener('click', handleLogout);
+            
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', () => switchPage(btn.dataset.page));
+            });
+
+            ekskulModal.addEventListener('click', (e) => {
+                if (e.target === ekskulModal) closeModal();
+            });
+            
+            myEkskulList.addEventListener('click', (e) => {
+                const button = e.target.closest('.attendance-btn-home');
+                if (button) {
+                    const id = parseInt(button.dataset.id);
+                    const status = button.dataset.status;
+                    handleAttendance(id, status);
+                }
+            });
+
+            portfolioFilter.addEventListener('change', renderPortfolio);
+
+            uploadBtn.addEventListener('click', () => {
+                const fileInput = document.getElementById('fileUpload');
+                const description = document.getElementById('fileDescription').value;
+                const selectedEkskulId = parseInt(portfolioFilter.value);
+                const ekskul = ekskuls.find(e => e.id === selectedEkskulId);
+
+                if (selectedEkskulId > 0 && fileInput.files.length > 0 && description.trim() !== '') {
+                    if (!portfolios[selectedEkskulId]) portfolios[selectedEkskulId] = [];
+                    portfolios[selectedEkskulId].push({
+                        student: currentUser,
+                        achievement: `Dokumentasi Baru`,
+                        file: fileInput.files[0].name,
+                        desc: description
+                    });
+                    saveData();
+                    showToast(`Berhasil mengupload laporan untuk ${ekskul.name}! 📤`);
+                    renderPortfolio();
+                    fileInput.value = '';
+                    document.getElementById('fileDescription').value = '';
+                } else {
+                    showToast('Harap lengkapi semua data dulu ya! 🧐', 'error');
+                }
+            });
+
+            const handleSendMessage = () => {
+                const message = chatInput.value.trim();
+                if(message) {
+                    const now = new Date();
+                    const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                    chats.push({
+                        user: `${currentUser}`,
+                        message: message,
+                        time: time
+                    });
+                    saveData();
+                    renderChats();
+                    chatInput.value = '';
+                    
+                    // Bot response simulation
+                    setTimeout(() => {
+                        const botTime = new Date();
+                         const botTimeString = `${String(botTime.getHours()).padStart(2, '0')}:${String(botTime.getMinutes()).padStart(2, '0')}`;
+                        chats.push({
+                            user: 'Siswa Lain',
+                            message: 'Oke, terima kasih infonya!',
+                            time: botTimeString,
+                        });
+                        saveData();
+                        renderChats();
+                        showToast("Ada pesan baru untukmu! 📨");
+                    }, 2000);
+                }
+            };
+
+            sendChatBtn.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') handleSendMessage();
+            });
+
+
+            // --- APP INITIALIZATION ---
+            function initApp() {
+                loadData();
+                switchPage('homePage');
+                renderMyEkskuls();
+                renderEkskuls();
+                renderAnnouncements();
+                populatePortfolioFilter();
+                renderPortfolio();
+                renderChats();
+                lucide.createIcons();
+            }
+
+            // Check for saved user on page load
+            const savedUser = localStorage.getItem('xkulverse_currentUser');
+            if (savedUser) {
+                currentUser = savedUser;
+                loginPage.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                document.getElementById('welcomeName').textContent = currentUser;
+                initApp();
+            }
+
+        });
+    </script>
+</body>
+</html>
+
